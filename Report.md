@@ -18,4 +18,20 @@ The server issues the following greeting string to the client when intially conn
 `ECE Senior Capstone IoT simulator`
 
 #Task 1
+
+#Task 2
+
+Median Temp: 
+23.026214773220563
+
+Variance Temp:
+32.20412143421695
+
+Median Occupancy:
+72.30990954810562
+
+Variance Temp:
+6.0
+
+
 -----
