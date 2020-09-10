@@ -52,12 +52,36 @@ if __name__ == "__main__":
 
     data = load_data(file)
 
+    darray=np.array(list(data.values()))
+    print("Temp Var = " + str(np.nanvar(darray[0])))
+    print("Temp Median = " + str(np.nanmedian(darray[0])))
+
+    print("Occupancy Variance= " + str(np.nanvar(darray[1])))
+    print("Occupancy Median = " + str(np.nanmedian(darray[1])))
+
+    p,x = np.histogram(darray[0][~np.isnan(darray[0])],500, density = True)
+    s,d= np.histogram(darray[1][~np.isnan(darray[1])],500, density = True)
+    o,h =np.histogram(darray[2][~np.isnan(darray[2])],500, density = True)
+
+
+    fig=plt.figure()
+    plt.plot(x[0:500],p)
+    fig2=plt.figure()
+    plt.plot(d[0:500],s)
+    fig3=plt.figure()
+    plt.plot(h[0:500],o)
+
+
+
+    #print(data)
+
     for k in data:
         # data[k].plot()
         time = data[k].index
         data[k].hist()
         plt.figure()
         plt.hist(np.diff(time.values).astype(np.int64) // 1000000000)
-        plt.xlabel("Time (seconds)")
+        print(np.diff(time.values).astype(np.int64) // 1000000000)
+        
 
     plt.show()
