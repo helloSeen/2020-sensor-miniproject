@@ -7,7 +7,7 @@ Date: 2020-09-09
 
 ## Summary
 This project focuses on the integration and analysis of internet-based sensors. It serves as an introduction to Python, web-based data transfer, and simple data analysis.  
-To simulate the sensors, a server and its clients are locally-hosted. The server maintains the client connections and the clients output timestamped messages about the occupancy, temperature, and CO2 level of a room in a building.
+To simulate the sensors, a server and its clients are locally-hosted. The server maintains the client connections and the clients output the received timestamped messages about the occupancy, temperature, and CO2 level of rooms in a building.
 
 
 ## Task 0

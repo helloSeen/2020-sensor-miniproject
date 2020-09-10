@@ -68,17 +68,21 @@ if __name__ == "__main__":
     print("Occupancy Median = " + str(np.nanmedian(occup)))
 
     #Create probability distribution functions for each sensor, ignoring NaN values
-    p,x = np.histogram(temp[~np.isnan(temp)],500, density = True)
-    s,d= np.histogram(occup[~np.isnan(occup)],500, density = True)
-    o,h =np.histogram(darray[2][~np.isnan(darray[2])],500, density = True)
+    #p,x = np.histogram(temp[~np.isnan(temp)],500, density = True)
+    #s,d= np.histogram(occup[~np.isnan(occup)],500, density = True)
+    #o,h =np.histogram(darray[2][~np.isnan(darray[2])],500, density = True)
 
     #Display histograms
-    fig=plt.figure()
-    (mu, sigma) = norm.fit(temp[~np.isnan(temp)])
-    center = (x[:-1] + x[1:]) / 2
-    plt.bar(center, p, align='center')
-    y = mlab.normpdf(x, mu, sigma)
-    plt.plot(bins, y, 'r--', linewidth=2)
+    for k in [temp, occup, co2]:
+
+        p,x = np.histogram(k[~np.isnan(k)],500, density = True)
+        (mu, sigma) = norm.fit(temp[~np.isnan(k)])
+        center = (x[:-1] + x[1:]) / 2
+
+        plt.figure()
+        plt.bar(center, p, align='center')
+        y = norm.pdf(x, mu, sigma)
+        plt.plot(x, y, 'r--', linewidth=2)
     #fig2=plt.figure()
     #plt.plot(d[0:500],s)
     #fig3=plt.figure()
