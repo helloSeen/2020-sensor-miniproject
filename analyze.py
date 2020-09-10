@@ -20,6 +20,21 @@ from scipy.stats import norm
 import matplotlib.mlab as mlab
 
 
+def detect_anomalies(temp_data):
+    room_names = ['class1', 'office', 'lab1']
+    x,y = temp.data.shape
+    #Iterate through columns
+    for i in range(y):
+        column = temp_data[:,i]
+        #Find mean and standard deviation
+        mean = np.nanmean(column)
+        std = np.nanstd(column)
+        #Find any values that are 1.5 STD's from the mean
+        anomalies = column[abs(column-mean) > 1.5 * std]
+        print("Anomalies detected in room " + room_names[i] + ": ")
+        print(anomalies)
+
+
 def load_data(file: Path) -> T.Dict[str, pandas.DataFrame]:
 
     temperature = {}
@@ -67,49 +82,32 @@ if __name__ == "__main__":
     print("Occupancy Variance= " + str(np.nanvar(occup)))
     print("Occupancy Median = " + str(np.nanmedian(occup)))
 
-    #Create probability distribution functions for each sensor, ignoring NaN values
-    #p,x = np.histogram(temp[~np.isnan(temp)],500, density = True)
-    #s,d= np.histogram(occup[~np.isnan(occup)],500, density = True)
-    #o,h =np.histogram(darray[2][~np.isnan(darray[2])],500, density = True)
-
     #Display histograms
     for k in [temp, occup, co2]:
-
-        p,x = np.histogram(k[~np.isnan(k)],500, density = True)
-        (mu, sigma) = norm.fit(temp[~np.isnan(k)])
+        #Make sure each bin is width 1 so the cumulative probability is ~= 1
+        bins = np.arange(np.floor(k[~np.isnan(k)].min()),np.ceil(k[~np.isnan(k)].max()))
+        p,x = np.histogram(k[~np.isnan(k)],bins, density = True)
         center = (x[:-1] + x[1:]) / 2
-
         plt.figure()
         plt.bar(center, p, align='center')
-        y = norm.pdf(x, mu, sigma)
-        plt.plot(x, y, 'r--', linewidth=2)
 
 
-    #fig2=plt.figure()
-    #plt.plot(d[0:500],s)
-    #fig3=plt.figure()
-    #plt.plot(h[0:500],o)
-
-
-
-    #print(data)
-
-
-        # data[k].plot()
-
-    #probability distribution function of time intervals    
-       
+    #probability distribution function of time intervals     
     time = data['temperature'].index
-    plt.figure()
     differences = np.diff(time.values).astype(np.int64) // 1000000000
-    plt.hist(differences)
+
+    bins = np.arange(np.floor(differences.min()),np.ceil(differences.max()))
+    p,x = np.histogram(differences,bins, density = True)
+    center = (x[:-1] + x[1:]) / 2
+
+    plt.figure()
+    plt.bar(center, p, align='center')
+    #plt.hist(differences)
     print("Mean of Intervals = " + str(differences.mean()))
     print("Variance of Intervals = " + str(differences.var()))
 
 
-
-
-
-        
-
+    detect_anomalies(temp)
     plt.show()
+
+
