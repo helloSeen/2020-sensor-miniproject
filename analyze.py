@@ -16,6 +16,8 @@ from datetime import datetime
 import typing as T
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import norm
+import matplotlib.mlab as mlab
 
 
 def load_data(file: Path) -> T.Dict[str, pandas.DataFrame]:
@@ -51,25 +53,36 @@ if __name__ == "__main__":
     file = Path(P.file).expanduser()
 
     data = load_data(file)
-
     darray=np.array(list(data.values()))
-    print("Temp Var = " + str(np.nanvar(darray[0])))
-    print("Temp Median = " + str(np.nanmedian(darray[0])))
 
-    print("Occupancy Variance= " + str(np.nanvar(darray[1])))
-    print("Occupancy Median = " + str(np.nanmedian(darray[1])))
+    #Slice the 3D numpy array
+    temp = darray[0]
+    occup = darray[1]
+    co2 = darray[2]
 
-    p,x = np.histogram(darray[0][~np.isnan(darray[0])],500, density = True)
-    s,d= np.histogram(darray[1][~np.isnan(darray[1])],500, density = True)
+    #Calculate and display statistics for temp and occup
+    print("Temp Var = " + str(np.nanvar(temp)))
+    print("Temp Median = " + str(np.nanmedian(temp)))
+
+    print("Occupancy Variance= " + str(np.nanvar(occup)))
+    print("Occupancy Median = " + str(np.nanmedian(occup)))
+
+    #Create probability distribution functions for each sensor, ignoring NaN values
+    p,x = np.histogram(temp[~np.isnan(temp)],500, density = True)
+    s,d= np.histogram(occup[~np.isnan(occup)],500, density = True)
     o,h =np.histogram(darray[2][~np.isnan(darray[2])],500, density = True)
 
-
+    #Display histograms
     fig=plt.figure()
-    plt.plot(x[0:500],p)
-    fig2=plt.figure()
-    plt.plot(d[0:500],s)
-    fig3=plt.figure()
-    plt.plot(h[0:500],o)
+    (mu, sigma) = norm.fit(temp[~np.isnan(temp)])
+    center = (x[:-1] + x[1:]) / 2
+    plt.bar(center, p, align='center')
+    y = mlab.normpdf(x, mu, sigma)
+    plt.plot(bins, y, 'r--', linewidth=2)
+    #fig2=plt.figure()
+    #plt.plot(d[0:500],s)
+    #fig3=plt.figure()
+    #plt.plot(h[0:500],o)
 
 
 
