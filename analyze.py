@@ -83,6 +83,8 @@ if __name__ == "__main__":
         plt.bar(center, p, align='center')
         y = norm.pdf(x, mu, sigma)
         plt.plot(x, y, 'r--', linewidth=2)
+
+
     #fig2=plt.figure()
     #plt.plot(d[0:500],s)
     #fig3=plt.figure()
@@ -92,13 +94,22 @@ if __name__ == "__main__":
 
     #print(data)
 
-    for k in data:
+
         # data[k].plot()
-        time = data[k].index
-        data[k].hist()
-        plt.figure()
-        plt.hist(np.diff(time.values).astype(np.int64) // 1000000000)
-        print(np.diff(time.values).astype(np.int64) // 1000000000)
+
+    #probability distribution function of time intervals    
+       
+    time = data['temperature'].index
+    plt.figure()
+    differences = np.diff(time.values).astype(np.int64) // 1000000000
+    plt.hist(differences)
+    print("Mean of Intervals = " + str(differences.mean()))
+    print("Variance of Intervals = " + str(differences.var()))
+
+
+
+
+
         
 
     plt.show()
