@@ -12,27 +12,29 @@ import pandas
 from pathlib import Path
 import argparse
 import json
+import math
 from datetime import datetime
 import typing as T
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import norm
 import matplotlib.mlab as mlab
 
+#Function to determine data points larger than 1.5 std's from data mean
+def detect_anomalies(temp_data, temp_var):
+    print("Detecting anomalies and removing from temperature data\n")
+    length,  = temp.data.shape
+    mean = np.nanmean(temp_data)
+    std = math.sqrt(temp_var)
+    #Find any values that are 1.5 STD's from the mean and discard them
+    temp_reduced = temp_data[~(abs(temp_data-mean) > (1.5 * std))]
+    new_length, = temp_reduced.data.shape
+    percent = ((length - new_length)/ length) * 100
+    print("%.2f%% of data was bad" %(percent))
 
-def detect_anomalies(temp_data):
-    room_names = ['class1', 'office', 'lab1']
-    x,y = temp.data.shape
-    #Iterate through columns
-    for i in range(y):
-        column = temp_data[:,i]
-        #Find mean and standard deviation
-        mean = np.nanmean(column)
-        std = np.nanstd(column)
-        #Find any values that are 1.5 STD's from the mean
-        anomalies = column[abs(column-mean) > 1.5 * std]
-        print("Anomalies detected in room " + room_names[i] + ": ")
-        print(anomalies)
+    new_median = np.nanmedian(temp_reduced)
+    new_var = np.nanvar(temp_reduced)
+
+    print("New median is %.2f and new variance is %.2f" %(new_median, new_var))
 
 
 def load_data(file: Path) -> T.Dict[str, pandas.DataFrame]:
@@ -71,25 +73,31 @@ if __name__ == "__main__":
     darray=np.array(list(data.values()))
 
     #Slice the 3D numpy array
-    temp = darray[0]
-    occup = darray[1]
-    co2 = darray[2]
+    temp = darray[0][:,1]
+    occup = darray[1][:,1]
+    co2 = darray[2][:,1]
 
     #Calculate and display statistics for temp and occup
-    print("Temp Var = " + str(np.nanvar(temp)))
-    print("Temp Median = " + str(np.nanmedian(temp)))
+    temp_var = np.nanvar(temp)
+    print("The following statistics are for room lab1:\n")
+    print("Temp Var = " + str(temp_var))
+    print("Temp Median = " + str(np.nanmedian(temp)) + "\n")
 
-    print("Occupancy Variance= " + str(np.nanvar(occup)))
-    print("Occupancy Median = " + str(np.nanmedian(occup)))
+    print("Occupancy Variance = " + str(np.nanvar(occup)))
+    print("Occupancy Median = " + str(np.nanmedian(occup)) + "\n")
 
     #Display histograms
-    for k in [temp, occup, co2]:
+    for k in [[temp, "Temperature"], [occup, "Occupancy"], [co2, "CO2"]]:
         #Make sure each bin is width 1 so the cumulative probability is ~= 1
-        bins = np.arange(np.floor(k[~np.isnan(k)].min()),np.ceil(k[~np.isnan(k)].max()))
-        p,x = np.histogram(k[~np.isnan(k)],bins, density = True)
+        sensor = k[0][~np.isnan(k[0])]
+        bins = np.arange(np.floor(sensor.min()),np.ceil(sensor.max()))
+        p,x = np.histogram(sensor,bins, density = True)
         center = (x[:-1] + x[1:]) / 2
         plt.figure()
         plt.bar(center, p, align='center')
+        plt.ylabel('Probability')
+        plt.xlabel('Sensor Value')
+        plt.title(k[1] + " Sensor PDF of Lab1")
 
 
     #probability distribution function of time intervals     
@@ -102,12 +110,13 @@ if __name__ == "__main__":
 
     plt.figure()
     plt.bar(center, p, align='center')
-    #plt.hist(differences)
-    print("Mean of Intervals = " + str(differences.mean()))
-    print("Variance of Intervals = " + str(differences.var()))
+    plt.ylabel('Probability')
+    plt.xlabel('Time between messages (Seconds)')
+    plt.title('Time Interval')
+    print("Time Interval Mean = " + str(differences.mean()))
+    print("Time Interval Variance = " + str(differences.var()) + "\n")
 
-
-    detect_anomalies(temp)
+    detect_anomalies(temp, temp_var)
     plt.show()
 
 
