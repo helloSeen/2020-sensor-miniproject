@@ -19,6 +19,29 @@ The server issues the following greeting string to the client when intially conn
 
 #Task 1
 
+Add Python code to Websockets client that saves the JSON data to a text file as it comes in (message by message)
+
+		for i in range(max_packets):
+            data = await websocket.recv()
+            log.write(data)
+            log.write("\n")
+            log.flush()
+            if i % 5 == 0:
+                pass
+                # print(f"{i} total messages received")
+            print(data)
+        log.close()
+
+
+To save the data to a file:
+	
+	python -m sp_iotsim.client -l "log.txt"
+
+To analyze the data:
+
+	python analyze.py "log.txt"
+
+
 #Task 2
 
 A key part of the sensor anaylyzer is finding the basic statistics to then be able to provide a baseline for analomy detection. 
@@ -66,8 +89,13 @@ c Possible bounds of temperature for each room type include:
 
 
 
-#Task 4
+#Task 4 - Conclusions
 
+a This is reflective of the real world because it is very common for smart systems to be aggregating metrics to a centralized server for further analysis. The packet format seems reasomnable, however the downside is that the monitoring is offline, when usually anomaly detection will take place in real time. Ultimately, this is very beneficial to us as humans because it helps us make sense of the world around us and these technology tools help us understand ourselves than if we didn't have these tools accesible to us. 
 
+b The simulation is deficient because, as stated in part a, it is using offline data instead of real-time data. Because our similation was only for a short period of time, as opposed to constantly tracking the different temperatures throughout the day, the similar doesn't capture the cylces of the day. For example, occupancy will change upon class schedules. Temperature will be colder during the night and warmer during the day. Having access to this real-time data would comfortably give us the most accurate mean and variance. 
 
+c We were surprised with how quickly we were able to understand these websockets. We are grateful that a good amount of it was pre-coded for us, which allows us to make sense of what was going on and then built on top of that. Generally, python is more forgiving as a quick scripting language becuase it isn't essential to define variables and compile. As opposed to C++ which is much more involved in relation to those aspects. 
+
+d The sensors should reach out to the servers when there is data for efficiency purposes. Otherwise, the servers would constantly be reaching out to the sensors, regardless of is there was data at a given time or not, thus causing more inefficiencies in the system. 
 -----
