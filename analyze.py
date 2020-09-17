@@ -26,6 +26,8 @@ def detect_anomalies(temp_data, temp_var):
     mean = np.nanmean(temp_data)
     std = math.sqrt(temp_var)
     #Find any values that are 1.5 STD's from the mean and discard them
+    print("Max allowable value: %.2f\n" %((1.5 * std) + mean))
+    print("Min allowable value: %.2f\n" %(mean-(1.5 * std)))
     temp_reduced = temp_data[~(abs(temp_data-mean) > (1.5 * std))]
     new_length = np.count_nonzero(~np.isnan(temp_reduced))
     percent = ((length - new_length)/ length) * 100
@@ -71,6 +73,7 @@ if __name__ == "__main__":
 
     data = load_data(file)
     darray=np.array(list(data.values()))
+    print(data)
 
     #Slice the 3D numpy array
     temp = darray[0][:,1]
@@ -97,7 +100,7 @@ if __name__ == "__main__":
         plt.bar(center, p, align='center')
         plt.ylabel('Probability')
         plt.xlabel('Sensor Value')
-        plt.title(k[1] + " Sensor PDF of Lab1")
+        plt.title(k[1] + " Sensor PDF of Class1")
 
 
     #probability distribution function of time intervals     
