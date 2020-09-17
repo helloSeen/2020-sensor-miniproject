@@ -17,8 +17,9 @@ The client outputs json-formatted messages like the following:
 The server issues the following greeting string to the client when intially connected:
 `ECE Senior Capstone IoT simulator`
 
-#Task 1
+## Task 1
 
+<<<<<<< HEAD
 Add Python code to Websockets client that saves the JSON data to a text file as it comes in (message by message)
 
 		for i in range(max_packets):
@@ -43,6 +44,9 @@ To analyze the data:
 
 
 #Task 2
+=======
+## Task 2
+>>>>>>> 9fb2d41522fae101efa3adf50729bfe8067cb529
 
 A key part of the sensor anaylyzer is finding the basic statistics to then be able to provide a baseline for analomy detection. 
 
@@ -67,8 +71,7 @@ These probability distribution functions are calculated by plotting a histogram 
 
 
 
-
-#Task 3
+## Task 3
 
 a We determined an "anomoly" to be any data point that is 1.5 standard deviation or more from the mean. 
 
