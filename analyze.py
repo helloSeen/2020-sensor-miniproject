@@ -22,12 +22,12 @@ import matplotlib.mlab as mlab
 #Function to determine data points larger than 1.5 std's from data mean
 def detect_anomalies(temp_data, temp_var):
     print("Detecting anomalies and removing from temperature data\n")
-    length,  = temp.data.shape
+    length  = np.count_nonzero(~np.isnan(temp_data))
     mean = np.nanmean(temp_data)
     std = math.sqrt(temp_var)
     #Find any values that are 1.5 STD's from the mean and discard them
     temp_reduced = temp_data[~(abs(temp_data-mean) > (1.5 * std))]
-    new_length, = temp_reduced.data.shape
+    new_length = np.count_nonzero(~np.isnan(temp_reduced))
     percent = ((length - new_length)/ length) * 100
     print("%.2f%% of data was bad" %(percent))
 
