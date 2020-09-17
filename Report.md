@@ -21,17 +21,53 @@ The server issues the following greeting string to the client when intially conn
 
 #Task 2
 
-Median Temp: 
-23.026214773220563
+A key part of the sensor anaylyzer is finding the basic statistics to then be able to provide a baseline for analomy detection. 
 
-Variance Temp:
-32.20412143421695
+The following statistics are for classroom 1:
 
-Median Occupancy:
-72.30990954810562
 
-Variance Temp:
-6.0
+![](temp.png)
+Temp Var = 58.65
+Temp Median = 26.99
+
+![](occupancy.png)
+Occupancy Variance = 17.37
+Occupancy Median = 19.00
+
+![](class1.png)
+
+![](time.png)
+Time Interval Mean = 0.58
+Time Interval Variance = 0.94
+
+These probability distribution functions are calculated by plotting a histogram of the data and normalizing so that the data sums to 100%. We were able to accomplish this by calling the Numpy functions and learning how to not take the nan values into account.
+
+
+
+
+#Task 3
+
+a We determined an "anomoly" to be any data point that is 1.5 standard deviation or more from the mean. 
+
+Using this guideline, we found that 1.99% of the data was consiered to be an anomaly. 
+
+
+After filtering the data, we realized the new median was 26.99, relatively the same as our previous median. However, the new variance was 2.38, quite the difference from our original variance of 58.65.
+
+b No, a persistent change in temperaure doesn't always indicate a failed sensor because the room could be heating or cooling. However, we do expect the data to follow a similar distribution.
+
+c Possible bounds of temperature for each room type include:
+
+	Lab 1: Mininmum value is 17.67 and maximum value is 24.40.
+
+	Classroom 1: Mininmum value is 15.61 and maximum value is 38.59.
+
+	Office: Mininmum value is 9.28 and maximum value is 37.0.
+
+
+
+#Task 4
+
 
 
 -----

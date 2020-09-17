@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
     data = load_data(file)
     darray=np.array(list(data.values()))
-    print(data)
+    # print(data)
 
     #Slice the 3D numpy array
     temp = darray[0][:,1]
